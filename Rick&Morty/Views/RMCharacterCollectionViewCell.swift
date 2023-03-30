@@ -13,7 +13,8 @@ class RMCharacterCollectionViewCell: UICollectionViewCell {
     
     private let imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -33,18 +34,17 @@ class RMCharacterCollectionViewCell: UICollectionViewCell {
         statusLabel.translatesAutoresizingMaskIntoConstraints = false
         return statusLabel
     }()
-
-
+    
+    
     
     //MARK: - Init
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         contentView.backgroundColor = .secondarySystemBackground
         addSubviews(imageView, nameLabel, statusLabel)
         setConstraints()
-
+        setupLayers()
     }
     
     required init?(coder: NSCoder) {
@@ -56,6 +56,13 @@ class RMCharacterCollectionViewCell: UICollectionViewCell {
         imageView.image = nil
         nameLabel.text = nil
         statusLabel.text = nil
+    }
+    
+    private func setupLayers() {
+        contentView.layer.cornerRadius = 4
+        contentView.layer.shadowColor = UIColor.label.cgColor
+        contentView.layer.shadowOffset = CGSize(width: -4, height: 4)
+        contentView.layer.shadowOpacity = 0.4
     }
     
     public func configure(with viewModel: RMCharacterCollectionViewCellViewModel) {
@@ -74,25 +81,31 @@ class RMCharacterCollectionViewCell: UICollectionViewCell {
             }
         }
     }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        setupLayers()
+    }
 }
 
 extension RMCharacterCollectionViewCell {
     private func setConstraints() {
         NSLayoutConstraint.activate([
-            statusLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5),
-            statusLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 5),
-            statusLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -5),
-            statusLabel.heightAnchor.constraint(equalToConstant: 40),
+            statusLabel.heightAnchor.constraint(equalToConstant: 30),
+            nameLabel.heightAnchor.constraint(equalToConstant: 30),
             
-            nameLabel.bottomAnchor.constraint(equalTo: statusLabel.topAnchor, constant: -5),
-            nameLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 5),
-            nameLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -5),
-            nameLabel.heightAnchor.constraint(equalToConstant: 40),
-
-            imageView.bottomAnchor.constraint(equalTo: nameLabel.topAnchor, constant: -5),
-            imageView.topAnchor.constraint(equalTo: topAnchor, constant: 5),
-            imageView.leftAnchor.constraint(equalTo: leftAnchor, constant: 5),
-            imageView.rightAnchor.constraint(equalTo: rightAnchor, constant: -5)
+            statusLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 7),
+            statusLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -7),
+            nameLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 7),
+            nameLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -7),
+            
+            statusLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -3),
+            nameLabel.bottomAnchor.constraint(equalTo: statusLabel.topAnchor),
+            
+            imageView.topAnchor.constraint(equalTo: topAnchor),
+            imageView.leftAnchor.constraint(equalTo: leftAnchor),
+            imageView.rightAnchor.constraint(equalTo: rightAnchor),
+            imageView.bottomAnchor.constraint(equalTo: nameLabel.topAnchor, constant: -3)
         ])
     }
 }
